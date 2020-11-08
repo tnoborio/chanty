@@ -1,0 +1,48 @@
+{:duct.profile/base
+ {:duct.core/project-ns chanty
+
+  :chanty.handler.user/fetch {:db #ig/ref :duct.database/sql}
+  :chanty.handler.user/create {:db #ig/ref :duct.database/sql}
+
+  :chanty.handler.message/fetch {:db #ig/ref :duct.database/sql}
+  :chanty.handler.message/create {:db #ig/ref :duct.database/sql}
+
+  :duct.database/sql
+  {:connection-uri "jdbc:sqlite:db/chanty.sqlite"
+   :logger #ig/ref :duct/logger}
+
+  :duct.migrator/ragtime
+  {:database #ig/ref :duct.database/sql
+   :migrations [#ig/ref :chanty.migration/create-users
+                #ig/ref :chanty.migration/create-messages]}
+
+  [:duct.migrator.ragtime/sql :chanty.migration/create-users]
+  {:up ["CREATE TABLE users (id integer primary key, nickname TEXT)"
+        "INSERT INTO users (id, nickname) values(1234, 'test1')"]
+   :down ["DROP TABLE users"]}
+
+  [:duct.migrator.ragtime/sql :chanty.migration/create-messages]
+  {:up ["CREATE TABLE messages (user_id integer primary key, contents TEXT)"]
+   :down ["DROP TABLE messages"]}}
+
+ :duct.module/ataraxy
+ {"/api"
+  {"/users"
+   {[:get "/" id] [:user/fetch ^int id]
+    [:post {{:keys [nickname]} :params}] [:user/create nickname]}
+
+   "/messages"
+   {[:get "/" id] [:message/fetch ^int id]
+    [:post {{:keys [from to body]} :params}] [:message/create ^int from ^int to body]}}}
+
+
+ :duct.profile/dev   #duct/include "dev"
+ :duct.profile/local #duct/include "local"
+ :duct.profile/prod  {}
+
+ :duct.module/logging {}
+ :duct.module.web/api
+ {}
+
+ :duct.module/sql
+ {}}
