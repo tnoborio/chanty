@@ -19,7 +19,7 @@
 
 (defn create-message [db user-id message]
   (let [messages (fetch-messages db user-id)
-        messages (take 200 (conj messages message))]
+        messages (vec (take 200 (conj messages message)))]
     (db/upsert! db :messages {:user_id user-id :contents (str messages)})))
 
 (extend-protocol Messages

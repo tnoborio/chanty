@@ -9,7 +9,10 @@
                  [duct/module.sql "0.5.0"]
                  [duct/module.web "0.7.0"]
                  [org.xerial/sqlite-jdbc "3.27.2"]
-                 [honeysql "1.0.444"]]
+                 [honeysql "1.0.444"]
+                 [duct/server.http.http-kit "0.1.4"]
+                 [org.clojure/core.async "1.3.610"]
+                 [ring-cors "0.1.13"]]
   :plugins [[duct/lein-duct "0.12.1"]]
   :main ^:skip-aot chanty.main
   :resource-paths ["resources" "target/resources"]

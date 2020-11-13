@@ -1,11 +1,21 @@
 {:duct.profile/base
  {:duct.core/project-ns chanty
 
+  :duct.server.http/http-kit {:port 3030}
+
   :chanty.handler.user/fetch {:db #ig/ref :duct.database/sql}
   :chanty.handler.user/create {:db #ig/ref :duct.database/sql}
 
   :chanty.handler.message/fetch {:db #ig/ref :duct.database/sql}
   :chanty.handler.message/create {:db #ig/ref :duct.database/sql}
+  :chanty.handler.message/polling {:db #ig/ref :duct.database/sql}
+
+  :chanty.middleware/wrap-cors
+  {:access-control-allow-origin [#chanty/regex ".*"]
+   :access-control-allow-methods [:get :put :post :delete]}
+
+  :duct.handler/root
+  {:middleware [#ig/ref :chanty.middleware/wrap-cors]}
 
   :duct.database/sql
   {:connection-uri "jdbc:sqlite:db/chanty.sqlite"
@@ -29,12 +39,12 @@
  {"/api"
   {"/users"
    {[:get "/" id] [:user/fetch ^int id]
-    [:post {{:keys [nickname]} :params}] [:user/create nickname]}
+    [:post {{:keys [nickname]} :body-params}] [:user/create nickname]}
 
    "/messages"
    {[:get "/" id] [:message/fetch ^int id]
-    [:post {{:keys [from to body]} :params}] [:message/create ^int from ^int to body]}}}
-
+    [:post {{:keys [from to body]} :body-params}] [:message/create ^int from ^int to body]
+    [:get "/" id "/polling"] [:message/polling]}}}
 
  :duct.profile/dev   #duct/include "dev"
  :duct.profile/local #duct/include "local"

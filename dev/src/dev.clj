@@ -9,12 +9,14 @@
             [eftest.runner :as eftest]
             [integrant.core :as ig]
             [integrant.repl :refer [clear halt go init prep reset]]
-            [integrant.repl.state :refer [config system]]))
+            [integrant.repl.state :refer [config system]]
+            [chanty.main :refer [custom-readers]]))
 
 (duct/load-hierarchy)
 
 (defn read-config []
-  (duct/read-config (io/resource "chanty/config.edn")))
+  (duct/read-config (io/resource "chanty/config.edn")
+                    custom-readers))
 
 (defn test []
   (eftest/run-tests (eftest/find-tests "test")))
