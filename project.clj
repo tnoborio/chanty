@@ -12,7 +12,8 @@
                  [honeysql "1.0.444"]
                  [duct/server.http.http-kit "0.1.4"]
                  [org.clojure/core.async "1.3.610"]
-                 [ring-cors "0.1.13"]]
+                 [ring-cors "0.1.13"]
+                 [crypto-password "0.2.1"]]
   :plugins [[duct/lein-duct "0.12.1"]]
   :main ^:skip-aot chanty.main
   :resource-paths ["resources" "target/resources"]
