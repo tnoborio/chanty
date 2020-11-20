@@ -1,8 +1,7 @@
 (ns chanty.boundary.db.message
   (:require [duct.database.sql]
             [honeysql.core :as sql]
-            [chanty.boundary.db.core :as db])
-  (:import [org.sqlite SQLiteException]))
+            [chanty.boundary.db.core :as db]))
 
 (defprotocol Messages
   (create [db from to message])
@@ -26,6 +25,10 @@
   duct.database.sql.Boundary
   (create [db from to body]
     (let [message {:from from :to to :body body}]
-      (create-message db from message)
-      (create-message db to message)))
+      (prn (= from to) from to)
+      (if (= from to)
+        (create-message db from message)
+        (do
+          (create-message db from message)
+          (create-message db to message)))))
   (fetch [db id] (fetch-messages db id)))

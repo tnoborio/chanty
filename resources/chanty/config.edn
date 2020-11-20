@@ -32,7 +32,7 @@
    :down ["DROP TABLE users"]}
 
   [:duct.migrator.ragtime/sql :chanty.migration/create-messages]
-  {:up ["CREATE TABLE messages (user_id integer primary key, contents TEXT)"]
+  {:up ["CREATE TABLE messages (user_id TEXT primary key, contents TEXT)"]
    :down ["DROP TABLE messages"]}}
  
  :duct.module/ataraxy
@@ -43,8 +43,8 @@
     [:post {{:keys [id nickname password]} :body-params}] [:user/signup id nickname password]}
 
    "/messages"
-   {[:get "/" id] [:message/fetch ^int id]
-    [:post {{:keys [from to body]} :body-params}] [:message/create ^int from ^int to body]
+   {[:get "/" id] [:message/fetch id]
+    [:post {{:keys [from to body]} :body-params}] [:message/create from to body]
     [:get "/" id "/polling"] [:message/polling]}}}
 
  :duct.profile/dev   #duct/include "dev"
